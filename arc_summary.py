@@ -1,7 +1,7 @@
 """
   Hua Sun
   12/20/24 v0.4
-
+  
 """
 
 import glob
@@ -15,20 +15,21 @@ import argparse
 parser = argparse.ArgumentParser()
 parser.add_argument('-f', '--func', type=str, default='qc', help='qc,merge')
 parser.add_argument('-d', '--dir', type=str, default='.', help='cellranger outs')
-parser.add_argument('-o', '--outdir', type=str, default='.', help='out dir')
+parser.add_argument('-o', '--outdir', type=str, default='out_summary', help='out dir')
 
 args = parser.parse_args()
 
 
 
 def Main():
-    if (args.outdir != '') & (args.outdir != '.'):
-        if not os.path.isdir(args.outdir):
+    func = args.func
+    if not os.path.isdir(args.outdir):
             os.mkdir(args.outdir)
 
     if func == 'qc':
         samples = get_first_level_folders(args.dir)
         for x in samples:
+            print(x)
             f_csv = f'{args.dir}/{x}/outs/summary.csv'
             QC_MultiomeSummaryFile(f_csv, f'{args.outdir}/{x}.summary.log')
 
@@ -45,7 +46,7 @@ def get_first_level_folders(path):
     folders = []
     for entry in os.scandir(path):
         if entry.is_dir():
-            folders.append(entry.name)
+            folders._append(entry.name)
     return folders
 
 
@@ -195,7 +196,7 @@ def QC_MultiomeSummaryFile(f_data, outfile):
   n_pass = report.loc[report.iloc[:,3]=='PASS'].shape[0]/report.loc[report.iloc[:,3].isin(['PASS','FAIL'])].shape[0] * 100
   n_pass = round(n_pass, 2)
   print(f'Percentage of PASS: {n_pass}%')
-  report = report.append(dict(zip(report.columns,['Percentage of PASS', '.', '.', n_pass])), ignore_index=True)
+  report = report._append(dict(zip(report.columns,['Percentage of PASS', '.', '.', n_pass])), ignore_index=True)
   report.to_csv(outfile, sep='\t', index=False)
 
 
