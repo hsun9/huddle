@@ -1,6 +1,6 @@
 """
   Hua Sun
-  9/25/24 v0.3
+  12/20/24 v0.4
 
 """
 
@@ -27,9 +27,10 @@ def Main():
             os.mkdir(args.outdir)
 
     if func == 'qc':
-        f_csv = f'{args.dir}/outs/summary.csv'
-        outfile = f'{args.outdir}/arc_qc.summary.log'
-        QC_MultiomeSummaryFile(f_csv, outfile)
+        samples = get_first_level_folders(args.dir)
+        for x in samples:
+            f_csv = f'{args.dir}/{x}/outs/summary.csv'
+            QC_MultiomeSummaryFile(f_csv, f'{args.outdir}/{x}.summary.log')
 
     if func == 'merge':
         MergeSummaryFile(args.dir)
@@ -39,6 +40,15 @@ def Main():
 """
   Set Func.
 """
+
+def get_first_level_folders(path):
+    folders = []
+    for entry in os.scandir(path):
+        if entry.is_dir():
+            folders.append(entry.name)
+    return folders
+
+
 
 ## Cellragner-arc count 'summary.csv'
 def QC_MultiomeSummaryFile(f_data, outfile):
