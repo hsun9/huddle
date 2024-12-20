@@ -13,7 +13,6 @@ import argparse
 
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-f', '--func', type=str, default='qc', help='qc,merge')
 parser.add_argument('-d', '--dir', type=str, default='.', help='cellranger outs')
 parser.add_argument('-o', '--outdir', type=str, default='out_summary', help='out dir')
 
@@ -26,15 +25,15 @@ def Main():
     if not os.path.isdir(args.outdir):
             os.mkdir(args.outdir)
 
-    if func == 'qc':
-        samples = get_first_level_folders(args.dir)
-        for x in samples:
-            print(x)
-            f_csv = f'{args.dir}/{x}/outs/summary.csv'
-            QC_MultiomeSummaryFile(f_csv, f'{args.outdir}/{x}.summary.log')
+    # summary per sample
+    samples = get_first_level_folders(args.dir)
+    for x in samples:
+        print(x)
+        f_csv = f'{args.dir}/{x}/outs/summary.csv'
+        QC_MultiomeSummaryFile(f_csv, f'{args.outdir}/{x}.summary.log')
 
-    if func == 'merge':
-        MergeSummaryFile(args.dir)
+    # merge
+    MergeSummaryFile(args.outdir)
 
 
 
@@ -46,7 +45,7 @@ def get_first_level_folders(path):
     folders = []
     for entry in os.scandir(path):
         if entry.is_dir():
-            folders._append(entry.name)
+            folders.append(entry.name)
     return folders
 
 
@@ -205,7 +204,7 @@ def QC_MultiomeSummaryFile(f_data, outfile):
 
 # merge summary files
 def MergeSummaryFile(dir_qc):
-    files = glob.glob(f'{dir_qc}/*/qc_summary.log')
+    files = glob.glob(f'{dir_qc}/*/*.summary.log')
     i = 0
     df_qc = []
     for f in files:
