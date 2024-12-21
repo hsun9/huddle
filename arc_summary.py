@@ -21,7 +21,6 @@ args = parser.parse_args()
 
 
 def Main():
-    func = args.func
     if not os.path.isdir(args.outdir):
             os.mkdir(args.outdir)
 
@@ -204,7 +203,7 @@ def QC_MultiomeSummaryFile(f_data, outfile):
 
 # merge summary files
 def MergeSummaryFile(dir_qc):
-    files = glob.glob(f'{dir_qc}/*/*.summary.log')
+    files = glob.glob(f'{dir_qc}/*.summary.log')
     i = 0
     df_qc = []
     for f in files:
